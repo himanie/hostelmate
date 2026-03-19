@@ -29,3 +29,32 @@ class User(db.Model):
             "email":self.email,
             "name":self.name
         }
+    
+    role = db.Column(db.String(20), default="student")
+    phone = db.Column(db.String(15), unique = True)
+    
+
+    room_number = db.Column(db.String(20))
+    course = db.Column(db.String(100))
+    year = db.Column(db.String(20))
+    is_verified = db.Column(db.Boolean, default=False)
+    verification_token = db.Column(db.String(255))
+    reset_token = db.Column(db.String(255))
+    reset_token_expiry = db.Column(db.DateTime)
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "name": self.name,
+            "hostel_id": self.hostel_id,
+            "room_number": self.room_number,
+            "course": self.course,
+            "year": self.year,
+            "is_verified": self.is_verified,
+            "created_at": str(self.created_at)
+        }

@@ -4,7 +4,7 @@ from sqlalchemy import func
 from app.extensions import db
 from app.models.user import User
 from app.models.mess_rating import MessRating
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 mess_bp = Blueprint("mess_ratings", __name__)
 
@@ -100,3 +100,21 @@ def submit_rating():
         "message": "Rating submitted successfully",
         "rating": rating.to_dict()
     }), 201
+
+@mess_bp.route("/api/weekly", methods=["GET"])
+def weekly_ratings():
+
+    hostel_id = request.args.get("hostel_id")
+
+    today = datetime.utcnow().date()
+    last_week = today - timedelta(days=6)
+
+    ratings = MessRating.query.filter(
+        MessRating.hostel_id == hostel_id,
+        func.date(MessRating.created_at) >= last_week,
+        func.date(MessRating.created_at) <= today
+    ).all()
+
+    return jsonify({
+        "ratings": [r.to_dict() for r in ratings]
+    })

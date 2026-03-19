@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from app.models.user import User
 from app.models.hostel import Hostels
 from app.models.mess_rating import MessRating
+from app.models.mess_menu import Messmenu
 import os
 from dotenv import load_dotenv
 

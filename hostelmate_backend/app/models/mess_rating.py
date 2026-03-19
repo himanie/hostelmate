@@ -30,3 +30,4 @@ class MessRating(db.Model):
             "date": str(self.date),
             "created_at": str(self.created_at)
         }
+    
