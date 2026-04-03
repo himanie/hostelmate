@@ -3,8 +3,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
 from app.extensions import db
 from app.models.user import User
+from werkzeug.utils import secure_filename
 from app.models.mess_rating import MessRating
 from datetime import datetime, date, timedelta
+import cloudinary.uploader
 
 mess_bp = Blueprint("mess_ratings", __name__)
 
@@ -74,32 +76,51 @@ def rating_stats(hostel_id):
         "average_rating": float(avg_rating or 0)
     })
 
+
 @mess_bp.route("/api/submit", methods=["POST"])
+@jwt_required()
 def submit_rating():
+    try:
+        user_id = get_jwt_identity()
 
-    data = request.get_json()
+        user = User.query.get(user_id)
 
-    user_id = data.get("user_id")
-    hostel_id = data.get("hostel_id")
+        hostel_id = user.hostel_id
 
-    rating = MessRating(
-        user_id=user_id,
-        hostel_id=hostel_id,
-        meal_type=data.get("meal_type"),
-        rating=data.get("rating"),
-        comment=data.get("comment"),
-        photo_url=data.get("photo_url"),
-        date=date.today(),
-        created_at=datetime.utcnow()
-    )
+        meal_type = request.form.get("meal_type")
+        rating_value = request.form.get("rating")
+        comment = request.form.get("comment")
 
-    db.session.add(rating)
-    db.session.commit()
+        photo = request.files.get("photo")
 
-    return jsonify({
-        "message": "Rating submitted successfully",
-        "rating": rating.to_dict()
-    }), 201
+        image_url = None
+
+        if photo:
+            result = cloudinary.uploader.upload(photo)
+            image_url = result.get("secure_url")
+
+      
+        rating = MessRating(
+            user_id=user_id,
+            hostel_id=hostel_id,
+            meal_type=meal_type,
+            rating=rating_value,
+            comment=comment,
+            photo_url=image_url,
+            date=date.today(),
+            created_at=datetime.utcnow()
+        )
+
+        db.session.add(rating)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Rating submitted successfully",
+            "image_url": image_url
+        }), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @mess_bp.route("/api/weekly", methods=["GET"])
 def weekly_ratings():

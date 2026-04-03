@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from sqlalchemy import func
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models.user import User
 from app.models.hostel import Hostels

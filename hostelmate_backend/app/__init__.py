@@ -12,15 +12,26 @@ from app.models.hostel import Hostels
 from app.models.mess_rating import MessRating
 from app.models.mess_menu import Messmenu
 from app.models.complaints import Complaint
+import cloudinary
 import os
 from dotenv import load_dotenv
 
 
+
 load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("API_KEY"),
+    api_secret=os.getenv("API_SECRET")
+)
 
 def create_app():
     app = Flask(__name__)
     CORS(app)
+
+    app.config["UPLOAD_FOLDER"] = "uploads"
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
