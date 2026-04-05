@@ -18,33 +18,34 @@ def get_ratings(hostel_id):
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
 
-    meal_type = request.args.get("meal_type")
-    date_filter = request.args.get("date")
-
-    query = MessRating.query.filter_by(hostel_id=hostel_id)
-
-    # meal_type filter
-    if meal_type:
-        query = query.filter(MessRating.meal_type == meal_type)
-
-    # date filter
-    if date_filter:
-        query = query.filter(func.date(MessRating.created_at) == date_filter)
+    query = db.session.query(MessRating, User).join(
+        User, User.id == MessRating.user_id
+    ).filter(
+        MessRating.hostel_id == hostel_id
+    )
 
     pagination = query.order_by(
         MessRating.created_at.desc()
     ).paginate(page=page, per_page=limit, error_out=False)
 
-    ratings = [r.to_dict() for r in pagination.items]
+    ratings = []
+
+    for rating, user in pagination.items:
+        ratings.append({
+            "id": rating.id,
+            "rating": rating.rating,
+            "comment": rating.comment,
+            "meal_type": rating.meal_type,
+            "photo_url": rating.photo_url,
+            "date": str(rating.date),
+
+            "user_name": user.name,
+            "user_email": user.email
+        })
 
     return jsonify({
         "ratings": ratings,
-        "pagination": {
-            "page": page,
-            "limit": limit,
-            "total": pagination.total,
-            "pages": pagination.pages
-        }
+        "total": pagination.total
     })
 
 @mess_bp.route("/api/today/<int:hostel_id>", methods=["GET"])

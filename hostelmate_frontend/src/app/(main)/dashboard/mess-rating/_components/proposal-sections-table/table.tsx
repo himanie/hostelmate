@@ -80,7 +80,6 @@ export function ProposalSectionsTable({ data: initialData }: { data: ProposalSec
   
 
   const [data, setData] = React.useState<any[]>([]);
-console.log("himani ka data=>", data);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
@@ -89,9 +88,7 @@ console.log("himani ka data=>", data);
   React.useEffect(() => {
     const fetchRatings = async () => {
       const token = localStorage.getItem("token");
-      // const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
    
-console.log("ENV:", process.env.NEXT_PUBLIC_BACKEND_URL);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/ratings/1?page=${pagination.pageIndex + 1}&limit=${pagination.pageSize}`,
         {
@@ -103,7 +100,6 @@ console.log("ENV:", process.env.NEXT_PUBLIC_BACKEND_URL);
 
       const result = await res.json();
       setData(result.ratings);
-      console.log("hello",result)
     };
 
     fetchRatings();
@@ -146,7 +142,7 @@ console.log("ENV:", process.env.NEXT_PUBLIC_BACKEND_URL);
       onValueChange={(value) => setActiveView(value as ViewOption)}
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-end">
         
         <div className="flex items-center gap-2">
           <Button
@@ -162,7 +158,7 @@ console.log("ENV:", process.env.NEXT_PUBLIC_BACKEND_URL);
       </div>
 
       
-    <div className="w-full border-amber-500 bg-gray-300">
+    <div className="w-full border-amber-500">
   
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       
@@ -193,9 +189,11 @@ console.log("ENV:", process.env.NEXT_PUBLIC_BACKEND_URL);
               ⭐ {item.rating} / 5
             </div>
 
+
             {/* Date */}
-            <p className="text-sm text-gray-400 mt-2">
-              {item.date}
+            <p className="text-sm text-gray-400 mt-2 flex justify-between ">
+             <span >{item.date}</span> 
+             <span className="text-end">{item.user_name} ({item.user_email})</span>
             </p>
           </div>
         </div>
