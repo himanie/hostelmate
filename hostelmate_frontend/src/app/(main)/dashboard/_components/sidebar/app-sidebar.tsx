@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { CircleHelp, ClipboardList, Command, Database, File, Search, Settings } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
+import { useUser } from "@/hooks/useUser";
 
 import {
   Sidebar,
@@ -21,6 +22,8 @@ import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+// import { useRouter } from "next/navigation";
+
 
 const _data = {
   navSecondary: [
@@ -60,6 +63,12 @@ const _data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  // const router = useRouter();
+  // const currentUser = useUser();
+
+  // if (!currentUser) return router.push("/signin");
+
   const { sidebarVariant, sidebarCollapsible, isSynced } = usePreferencesStore(
     useShallow((s) => ({
       sidebarVariant: s.sidebarVariant,

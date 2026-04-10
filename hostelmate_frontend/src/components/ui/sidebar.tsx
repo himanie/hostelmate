@@ -68,6 +68,8 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
+  const currentUser = JSON.parse(localStorage.getItem("info") || "null");
+
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
   const [_open, _setOpen] = React.useState(defaultOpen)
@@ -124,6 +126,10 @@ function SidebarProvider({
     }),
     [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
   )
+
+  if (!currentUser) {
+    window.location.href = "/signin"; 
+  }
 
   return (
     <SidebarContext.Provider value={contextValue}>

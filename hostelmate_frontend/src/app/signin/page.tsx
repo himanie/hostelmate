@@ -12,10 +12,10 @@ export default function Signin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // 👈 add this
+  const [loading, setLoading] = useState(false); 
 
   const handleLogin = async () => {
-    setLoading(true); // 👈 start loading
+    setLoading(true); 
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/login`, {
@@ -34,6 +34,7 @@ export default function Signin() {
 
       if (res.ok) {
         localStorage.setItem("token", data.access_token);
+        localStorage.setItem("info", JSON.stringify(data.user));
         router.push("/dashboard");
       } else {
         alert(data.msg || "Login failed");

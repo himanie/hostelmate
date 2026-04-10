@@ -1,11 +1,24 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.extensions import  db
 from app.models.user import User
+from hostelmate_backend.app.models import user
 
 
 auth_bp = Blueprint("auth", __name__)
 
+
+@auth_bp.route("/api/loggedin-user", methods=["GET"])
+@jwt_required()
+def get_current_user():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    print("Current user:", user)
+    return jsonify({
+        "name": user.name,
+        "email": user.email
+    })
 
 @auth_bp.route("/api/register", methods=["POST"])
 def register():
