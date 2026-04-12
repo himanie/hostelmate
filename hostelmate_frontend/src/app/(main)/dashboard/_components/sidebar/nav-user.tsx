@@ -2,6 +2,15 @@
 
 import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
 
+import { useEffect, useState } from "react";
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  role: string;
+};
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -14,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { getInitials } from "@/lib/utils";
+import { useRouter } from "next/dist/client/components/navigation";
 
 export function NavUser({
   user,
