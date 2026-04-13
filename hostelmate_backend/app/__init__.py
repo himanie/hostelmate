@@ -6,6 +6,7 @@ from app.routes.mess_rating import mess_bp
 from app.routes.hostel import hostel_bp
 from app.routes.mess_menu import menu_bp 
 from app.routes.complaints import complaint_bp
+from app.routes.user import user_bp
 from flask_migrate import Migrate
 from app.models.user import User
 from app.models.hostel import Hostels
@@ -48,5 +49,6 @@ def create_app():
     app.register_blueprint(hostel_bp, url_prefix="")
     app.register_blueprint(menu_bp, url_prefix="")
     app.register_blueprint(complaint_bp, url_prefix="")
+    app.register_blueprint(user_bp, url_prefix="")
 
     return app

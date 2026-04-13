@@ -1,10 +1,22 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from app.extensions import  db
 from app.models.user import User
 from app.models import user
 
+
 auth_bp = Blueprint("auth", __name__)
+
+
+
+blacklist = set()
+
+@auth_bp.route("/api/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]  
+    blacklist.add(jti)
+    return {"msg": "Logged out successfully"}, 200
 
 
 @auth_bp.route("/api/loggedin-user", methods=["GET"])

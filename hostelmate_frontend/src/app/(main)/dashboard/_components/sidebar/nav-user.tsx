@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 type User = {
   id: string;
@@ -35,6 +35,28 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("info");
+
+    router.push("/signin");
+  };
 
   return (
     <SidebarMenu>
@@ -77,8 +99,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <CircleUser />
-                Account
+                <Link href="/dashboard/account">Account</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
@@ -91,8 +112,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
-              Log out
+              <button onClick={handleLogout}>Logout</button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -22,6 +22,8 @@ import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { useEffect, useState } from "react";
+
+import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 
@@ -96,7 +98,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: currentUser?.avatar || "",
     role: currentUser?.role || "",
   }
-
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
       <SidebarHeader>
