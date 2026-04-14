@@ -80,3 +80,30 @@ def update_current_user():
             }
         }
     }), 200
+
+@user_bp.route("/api/change-password", methods=["PUT"])
+@jwt_required()
+def change_password():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    current_password = data.get("current_password")
+    new_password = data.get("new_password")
+    confirm_password = data.get("confirm_password")
+
+    user = db.session.get(User, user_id)
+
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+
+    if not user.check_password(current_password):
+        return jsonify({"msg": "Current password is incorrect"}), 400
+
+    if new_password != confirm_password:
+        return jsonify({"msg": "Passwords do not match"}), 400
+
+    user.set_password(new_password)
+    db.session.commit()
+
+    return jsonify({"msg": "Password updated successfully"}), 200

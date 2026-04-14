@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<"info" | "password">("info");
@@ -58,6 +59,65 @@ export default function AccountPage() {
   const handleCancel = () => {
     setUser(originalUser);
     setEditMode(false);
+  };
+
+  const [passwordData, setPasswordData] = useState({current_password: "",new_password: "",confirm_password: "",});
+
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdError, setPwdError] = useState("");
+  const [pwdSuccess, setPwdSuccess] = useState("");
+
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
+  const handlePasswordChange = (e: any) => {
+    setPasswordData({
+      ...passwordData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleUpdatePassword = async () => {
+    setPwdError("");
+    setPwdSuccess("");
+
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      setPwdError("Passwords do not match");
+      return;
+    }
+
+    setPwdLoading(true);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/change-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(passwordData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPwdError(data.msg || "Something went wrong");
+      } else {
+        setPwdSuccess("Password updated successfully");
+
+        setPasswordData({
+          current_password: "",
+          new_password: "",
+          confirm_password: "",
+        });
+      }
+    } catch (err) {
+      setPwdError("Server error");
+    } finally {
+      setPwdLoading(false);
+    }
   };
 
   if (!user) return <p className="p-6">Loading...</p>;
@@ -212,42 +272,119 @@ export default function AccountPage() {
       )}
 
       {activeTab === "password" && (
-        <div className="bg-card border rounded-2xl p-6 shadow-sm max-w-xl">
+    <div className="bg-card border rounded-2xl p-6 shadow-sm max-w-xl">
 
-          <h2 className="text-lg font-semibold mb-2">Security</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Change your password to keep your account secure
-          </p>
+      <h2 className="text-lg font-semibold mb-2">Security</h2>
+      <p className="text-sm text-muted-foreground mb-4">
+        Change your password to keep your account secure
+      </p>
 
-          <div className="space-y-4">
+      <div className="space-y-4">
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Current Password</label>
-              <input type="password"
-                className="w-full mt-1 p-3 border rounded-md bg-background focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">New Password</label>
-              <input type="password"
-                className="w-full mt-1 p-3 border rounded-md bg-background focus:ring-2 focus:ring-primary"/>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Confirm Password</label>
-              <input type="password"
-                className="w-full mt-1 p-3 border rounded-md bg-background focus:ring-2 focus:ring-primary"/>
-            </div>
-
-          </div>
-
-          <div className="flex justify-end mt-6">
-            <button className="px-5 py-2 bg-primary text-white rounded-md">
-              Update Password
-            </button>
-          </div>
+        {/* Current Password */}
+        <div className="relative">
+          <label className="text-sm font-medium text-muted-foreground">
+            Current Password
+          </label>
+          <input
+            type={showPassword.current ? "text" : "password"}
+            name="current_password"
+            value={passwordData.current_password}
+            onChange={handlePasswordChange}
+            className="w-full mt-1 p-3 pr-10 border rounded-md bg-background focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setShowPassword({
+                ...showPassword,
+                current: !showPassword.current,
+              })
+            }
+            className="absolute right-3 top-9 text-muted-foreground hover:text-primary"
+          >
+            {showPassword.current ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
         </div>
-      )}
+
+        {/* New Password */}
+        <div className="relative">
+          <label className="text-sm font-medium text-muted-foreground">
+            New Password
+          </label>
+          <input
+            type={showPassword.new ? "text" : "password"}
+            name="new_password"
+            value={passwordData.new_password}
+            onChange={handlePasswordChange}
+            className="w-full mt-1 p-3 pr-10 border rounded-md bg-background focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setShowPassword({
+                ...showPassword,
+                new: !showPassword.new,
+              })
+            }
+            className="absolute right-3 top-9 text-muted-foreground hover:text-primary"
+          >
+            {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {/* Confirm Password */}
+        <div className="relative">
+          <label className="text-sm font-medium text-muted-foreground">
+            Confirm Password
+          </label>
+          <input
+            type={showPassword.confirm ? "text" : "password"}
+            name="confirm_password"
+            value={passwordData.confirm_password}
+            onChange={handlePasswordChange}
+            className="w-full mt-1 p-3 pr-10 border rounded-md bg-background focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              setShowPassword({
+                ...showPassword,
+                confirm: !showPassword.confirm,
+              })
+            }
+            className="absolute right-3 top-9 text-muted-foreground hover:text-primary"
+          >
+            {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {/* Error */}
+        {pwdError && (
+          <p className="text-red-500 text-sm">{pwdError}</p>
+        )}
+
+        {/* Success */}
+        {pwdSuccess && (
+          <p className="text-green-600 text-sm">{pwdSuccess}</p>
+        )}
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={handleUpdatePassword}
+          disabled={pwdLoading}
+          className={`px-5 py-2 rounded-md text-white ${
+            pwdLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-primary"
+          }`}
+        >
+          {pwdLoading ? "Updating..." : "Update Password"}
+        </button>
+      </div>
+    </div>
+  )}
     </div>
   );
 }
