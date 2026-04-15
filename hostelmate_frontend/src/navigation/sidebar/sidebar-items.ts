@@ -89,3 +89,39 @@ export const sidebarItems: NavGroup[] = [
   },
  
 ];
+
+
+export const wardenSidebarItems: NavGroup[] = [
+  {
+    id: 1,
+    label: "Dashboards",
+    items: [
+      {
+        title: "Mess rating",
+        url: "/dashboard/mess-rating",
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Mess Menu",
+        url: "/dashboard/mess-menu",
+        icon: ChartBar,
+      },
+      {
+        title: "Request",
+        url: "/dashboard/request",
+        icon: ChartBar,
+      },
+      {
+        title: "Account",
+        url: "/dashboard/account",
+        icon: Banknote,
+      },
+      {
+        title: "Analytics",
+        url: "/dashboard/analytics",
+        icon: Gauge,
+      }
+    ],
+  }
+ 
+];

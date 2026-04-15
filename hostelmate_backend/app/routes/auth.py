@@ -65,24 +65,29 @@ def register():
         "user": user.to_dict()
     })
 
-@auth_bp.route("/api/login", methods = ["POST"])
+@auth_bp.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
 
     email = data.get("email")
     password = data.get("password")
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(email=email).first()
 
     if not user or not user.check_password(password):
         return jsonify({
-            "error":"Invalid credentials"
-        }),401
-    
+            "error": "Invalid credentials"
+        }), 401
+
+    if not user.is_verified:
+        return jsonify({
+            "error": "Account not verified. Please verify your account first."
+        }), 403
+
     token = create_access_token(identity=str(user.id))
 
     return jsonify({
-        "message":"login successful",
+        "message": "Login successful",
         "access_token": token,
         "user": user.to_dict()
     })

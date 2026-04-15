@@ -35,7 +35,9 @@ export default function Signin() {
       if (res.ok) {
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("info", JSON.stringify(data.user));
-        router.push("/dashboard");
+
+        data.user.role === "warden" ? router.push("/warden-dashboard") : router.push("/dashboard");
+        // router.push("/dashboard");
       } else {
         alert(data.msg || "Login failed");
       }

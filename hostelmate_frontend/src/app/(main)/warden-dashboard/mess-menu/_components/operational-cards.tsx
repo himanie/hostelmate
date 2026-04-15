@@ -63,7 +63,7 @@ export function OperationalCards() {
     //             </div>
     //             <div className="flex items-center gap-2">
     //               <Progress value={region.percentage} />
-    //               <span className="font-medium t 2Y8TBN ext-muted-foreground text-xs tabular-nums">{region.percentage}%</span>
+    //               <span className="font-medium text-muted-foreground text-xs tabular-nums">{region.percentage}%</span>
     //             </div>
     //           </div>
     //         ))}

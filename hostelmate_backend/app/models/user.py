@@ -57,5 +57,6 @@ class User(db.Model):
             "course": self.course,
             "year": self.year,
             "is_verified": self.is_verified,
+            "role": self.role,
             "created_at": str(self.created_at)
         }
