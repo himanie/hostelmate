@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { CircleHelp, ClipboardList, Command, Database, File, Search, Settings } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
-import { useUser } from "@/hooks/useUser";
 
 import {
   Sidebar,
@@ -20,11 +19,10 @@ import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
+import { useEffect, useState } from "react";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { useEffect, useState } from "react";
 
-import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 
@@ -115,8 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={sidebarItems} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+
       </SidebarContent>
       <SidebarFooter>
         

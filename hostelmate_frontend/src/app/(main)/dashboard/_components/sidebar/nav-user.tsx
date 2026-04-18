@@ -1,8 +1,7 @@
 "use client";
 
-import { CircleUser, CreditCard, EllipsisVertical, LogOut, MessageSquareDot } from "lucide-react";
+import { CreditCard, EllipsisVertical, MessageSquareDot } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 type User = {
   id: string;
   name: string;
