@@ -1,21 +1,10 @@
 import {
   Banknote,
-  Calendar,
   ChartBar,
   Fingerprint,
-  Forklift,
   Gauge,
-  GraduationCap,
-  Kanban,
   LayoutDashboard,
-  Lock,
   type LucideIcon,
-  Mail,
-  MessageSquare,
-  ReceiptText,
-  ShoppingBag,
-  SquareArrowUpRight,
-  Users,
 } from "lucide-react";
 
 export interface NavSubItem {
@@ -80,9 +69,7 @@ export const sidebarItems: NavGroup[] = [
         icon: Fingerprint,
         subItems: [
           { title: "Login v1", url: "/auth/v1/login", newTab: true },
-          { title: "Login v2", url: "/auth/v2/login", newTab: true },
           { title: "Register v1", url: "/auth/v1/register", newTab: true },
-          { title: "Register v2", url: "/auth/v2/register", newTab: true },
         ],
       },
     ],
@@ -104,11 +91,6 @@ export const wardenSidebarItems: NavGroup[] = [
       {
         title: "Mess Menu",
         url: "/warden-dashboard/mess-menu",
-        icon: ChartBar,
-      },
-      {
-        title: "request",
-        url: "/warden-dashboard/request",
         icon: ChartBar,
       },
       {
