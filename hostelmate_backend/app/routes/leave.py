@@ -132,3 +132,50 @@ def update_leave_status(leave_id):
         "leave_id": leave.id,
         "status": leave.status
     }), 200
+
+@leave_bp.route("/api/my-leaves", methods=["GET"])
+@jwt_required()
+def get_my_leaves():
+    user_id = get_jwt_identity()
+
+    leaves = Leave.query.filter_by(user_id=user_id).order_by(Leave.created_at.desc()).all()
+
+    data = []
+
+    for l in leaves:
+    
+        hostel_name = None
+        if l.hostel_id:
+            hostel = Hostels.query.get(l.hostel_id)
+            hostel_name = hostel.name if hostel else None
+
+  
+        approver_name = None
+        if l.approver:
+            approver_name = l.approver.name
+
+        data.append({
+            "id": l.id,
+            "hostel_name": hostel_name,
+
+            "leave_type": l.leave_type,
+            "start_date": l.start_date,
+            "end_date": l.end_date,
+
+            "reason": l.reason,
+            "destination": l.destination,
+
+            "parent_contact": l.parent_contact,
+            "contact_number": l.contact_number,
+
+            "status": l.status,
+
+       
+            "warden_comment": l.warden_comment,   
+            "approved_by": approver_name,
+            "approved_at": l.approved_at,
+
+            "created_at": l.created_at,
+        })
+
+    return jsonify(data), 200

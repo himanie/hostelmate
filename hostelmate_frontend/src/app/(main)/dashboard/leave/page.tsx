@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type Hostel = {
   id: number;
@@ -8,6 +9,8 @@ type Hostel = {
 };
 
 export default function LeavePage() {
+  const router = useRouter();
+  const [navLoading, setNavLoading] = useState(false);
   const [hostels, setHostels] = useState<Hostel[]>([]);
   const [loadingHostels, setLoadingHostels] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -46,6 +49,13 @@ export default function LeavePage() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
+  const handleMyLeaves = () => {
+  setNavLoading(true);
+
+  setTimeout(() => {
+    router.push("/dashboard/my-leaves");
+  }, 500);
+};
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -90,11 +100,30 @@ export default function LeavePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950 px-6 py-6">
 
-      <div className="flex gap-3 mb-6">
-        <button className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 transition">
-          Leave Application
-        </button>
-      </div>
+      <div className="flex gap-3 mb-6 items-center">
+
+  {/* Existing button */}
+  <button className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md shadow">
+    Leave Application
+  </button>
+
+  {/* NEW BUTTON */}
+  <button
+    onClick={handleMyLeaves}
+    disabled={navLoading}
+    className={`flex items-center gap-2 px-4 py-1.5 text-sm rounded-md text-white transition ${
+      navLoading
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-indigo-600 hover:bg-indigo-700"
+    }`}
+  >
+    {navLoading && (
+      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+    )}
+    {navLoading ? "Loading..." : "My Leaves"}
+  </button>
+
+</div>
 
     
       <div className="w-full bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8">
